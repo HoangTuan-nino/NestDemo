@@ -6,5 +6,8 @@
   "password": "",
   "database": "nestjs",
   "entities": ["dist/**/*.entity{.ts,.js}"],
-  "synchronize": true
+  "synchronize": false,
+  "migrations": ["dist/migrations/*{.ts,.js}"],
+  "migrationsTableName": "task_typeorm",
+  "migrationsRun": true
 }

@@ -7,7 +7,7 @@ import { AppService } from './app.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({ autoLoadEntities: true }),
+    TypeOrmModule.forRoot({ autoLoadEntities: true, synchronize: true }),
     TaskModule,
     CoursesModule,
   ],

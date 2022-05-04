@@ -1,8 +1,11 @@
+import { CreateTaskDTO } from './dto/create-task.dto';
 import {
   Body,
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -27,15 +30,16 @@ export class TaskController {
   }
   @Post()
   @ApiOkResponse({ status: 201, type: TaskEntity })
-  async create(@Body() task: TaskEntity) {
-    return await this.taskService.create(task);
+  async create(@Body() createTaskRequest: CreateTaskDTO) {
+    const res = await this.taskService.create(createTaskRequest);
+    return res;
   }
   @Put()
   async update(@Body() task: TaskEntity) {
     return await this.taskService.update(task);
   }
   @Delete(':id')
-  @ApiOkResponse({ status: 200, type: TaskEntity })
+  @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param() params) {
     return await this.taskService.delete(params.id);
   }
