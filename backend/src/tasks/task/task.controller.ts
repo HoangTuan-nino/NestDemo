@@ -13,6 +13,7 @@ import {
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { TaskEntity } from './task.entity';
 import { TaskService } from './task.service';
+import { UpdateTaskDTO } from './dto/update-task.dto';
 
 @ApiTags('tasks')
 @Controller('tasks')
@@ -34,9 +35,12 @@ export class TaskController {
     const res = await this.taskService.create(createTaskRequest);
     return res;
   }
-  @Put()
-  async update(@Body() task: TaskEntity) {
-    return await this.taskService.update(task);
+  @Put(':id')
+  async updateOne(
+    @Param('id') taskId: number,
+    @Body() updateTaskRequest: UpdateTaskDTO,
+  ) {
+    const res = await this.taskService.updateOne(taskId, updateTaskRequest);
   }
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)

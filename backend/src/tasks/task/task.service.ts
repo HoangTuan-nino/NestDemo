@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { TaskEntity } from './task.entity';
 import { TaskDTO } from './dto/task.dto';
+import { UpdateTaskDTO } from './dto/update-task.dto';
 
 @Injectable()
 export class TaskService {
@@ -28,8 +29,16 @@ export class TaskService {
     await this.taskRepository.save(task);
     return task;
   }
-  async update(task: TaskEntity): Promise<UpdateResult> {
-    return await this.taskRepository.update(task.id, task);
+  async updateOne(taskId: number, updateTaskRequest: UpdateTaskDTO) {
+    // fetch and check if task exists
+    const task: TaskEntity = await this.findOne(taskId);
+    // check which properties are set in the dto
+    task.name = updateTaskRequest.name || task.name;
+    task.description = updateTaskRequest.description || task.description;
+    task.isDone = updateTaskRequest.isDone || task.isDone;
+    // update the properties on the task
+    await this.taskRepository.save(task);
+    return task;
   }
   async delete(id: number): Promise<DeleteResult> {
     const task: TaskEntity = await this.findOne(id);
