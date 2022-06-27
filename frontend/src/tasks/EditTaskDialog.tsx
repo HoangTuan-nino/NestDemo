@@ -1,20 +1,13 @@
-import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { TaskAPI } from "../api/task.api";
+import TextField from "@mui/material/TextField";
+import React, { useEffect, useState } from "react";
 import { TaskDTO } from "../api/dto/task.dto";
-import {
-  FormControlLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-} from "@mui/material";
+import { TaskAPI } from "../api/task.api";
 
 type Props = {
   open: boolean;
@@ -43,6 +36,7 @@ const UpdateTaskDialog = (props: Props) => {
         isDone,
       });
       props.onTaskUpdate(res);
+      props.handleClose();
       console.log("Task Updated", res);
     }
     console.log(props.data);

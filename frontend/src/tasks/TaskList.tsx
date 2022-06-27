@@ -5,21 +5,26 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { TaskDTO } from "../api/dto/task.dto";
 import { TaskAPI } from "../api/task.api";
 import CreateTaskDialog from "./CreateTaskDialog";
+import DeleteTaskDialog from "./DeleteTaskDialog";
 import UpdateTaskDialog from "./EditTaskDialog";
 
-function TaskListt() {
+const TaskListt = () => {
   const [tasks, setTasks] = useState<TaskDTO[]>([]);
   const [openCreateTaskDialog, setOpenCreateTaskDialog] = useState(false);
   const [openUpdateTaskDialog, setOpenUpdateTaskDialog] = useState(false);
+  const [openDeleteTaskDialog, setOpenDeleteTaskDialog] = useState(false);
   const [taskEdited, setTaskEdited] = useState<undefined | TaskDTO>(undefined);
+  const [taskDeleted, setTaskDeleted] = useState<undefined | TaskDTO>(
+    undefined
+  );
 
   useEffect(() => {
     fetchAll();
-  }, []);
+  }, [tasks]);
 
   async function fetchAll() {
     const res = await TaskAPI.getAll();
@@ -30,10 +35,14 @@ function TaskListt() {
     setTasks([...tasks, task]);
   };
 
-  const deleteTask = async (taskId: number) => {
+  const deleteTask = (taskId: number) => {
     const filterTask = tasks.filter((t) => t.id !== taskId);
     setTasks(filterTask);
-    await TaskAPI.deleteOne(taskId);
+  };
+
+  const onTaskDeleteBtnClicked = (task: TaskDTO) => {
+    setOpenDeleteTaskDialog(true);
+    setTaskDeleted(task);
   };
 
   const updateTask = async (task: TaskDTO) => {
@@ -43,13 +52,13 @@ function TaskListt() {
         return t;
       })
     );
-    console.log("qweqwe");
   };
 
   const onTaskEditBtnClicked = (task: TaskDTO) => {
     setOpenUpdateTaskDialog(true);
     setTaskEdited(task);
   };
+
   const appbar = (
     <Box sx={{ flexGrow: 1 }}>
       <CreateTaskDialog
@@ -62,6 +71,12 @@ function TaskListt() {
         handleClose={() => setOpenUpdateTaskDialog(false)}
         onTaskUpdate={updateTask}
         data={taskEdited}
+      />
+      <DeleteTaskDialog
+        open={openDeleteTaskDialog}
+        handleClose={() => setOpenDeleteTaskDialog(false)}
+        onTaskDelete={deleteTask}
+        data={taskDeleted}
       />
       <AppBar position="static">
         <Toolbar>
@@ -114,7 +129,7 @@ function TaskListt() {
                         color="secondary"
                         variant="contained"
                         style={{ marginLeft: 5 }}
-                        onClick={() => deleteTask(task.id)}
+                        onClick={() => onTaskDeleteBtnClicked(task)}
                       >
                         Delete
                       </Button>
@@ -128,5 +143,5 @@ function TaskListt() {
       </Grid>
     </div>
   );
-}
+};
 export default TaskListt;
